@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import styled from "styled-components";
+import { Switch, Route, Link, BrowserRouter } from "react-router-dom";
+import { HomePage } from "./components/HomePage";
+import { LoginPage } from "./components/LoginPage";
+import { RoomPage } from "./components/RoomPage";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <SDiv>
+        <Link to="/">Home</Link>
+        <br />
+        <br />
+        <Link to="/login">Login</Link>
+        <br />
+        <br />
+        <Link to="/room">Room</Link>
+        <Switch>
+          <Route exact path="/">
+            <HomePage />
+          </Route>
+          <Route path="/login">
+            <LoginPage />
+          </Route>
+          <Route exact path="/room/:roomId">
+            <RoomPage />
+          </Route>
+        </Switch>
+      </SDiv>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
+
+const SDiv = styled.div`
+  margin-top: 20px;
+  text-align: center;
+`;
