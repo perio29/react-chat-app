@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { auth } from "../firebase";
+import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const history = useHistory();
 
-  const onClickLogin = async (e) => {
+  const handleClickLogin = async (e) => {
     e.preventDefault();
     await auth.signInWithEmailAndPassword(email, password);
+    history.push("/");
   };
 
   return (
@@ -17,7 +21,6 @@ export const LoginPage = () => {
         <div>
           <label>email</label>
           <input
-            name="email"
             value={email}
             placeholder="email"
             onChange={(e) => setEmail(e.target.value)}
@@ -26,14 +29,14 @@ export const LoginPage = () => {
         <div>
           <label>password</label>
           <input
-            name="password"
             type="password"
             value={password}
             placeholder="password"
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button onClick={onClickLogin}>Login</button>
+        <button onClick={handleClickLogin}>Login</button>
+        <Link to="/signup">登録がまだの方はこちら</Link>
       </form>
     </div>
   );
