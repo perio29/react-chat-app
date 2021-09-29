@@ -9,8 +9,12 @@ export const LoginPage = () => {
 
   const handleClickLogin = async (e) => {
     e.preventDefault();
-    await auth.signInWithEmailAndPassword(email, password);
-    history.push("/");
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      history.push("/");
+    } catch (error) {
+      alert("エラーが発生しました");
+    }
   };
 
   return (
