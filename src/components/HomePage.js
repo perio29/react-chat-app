@@ -15,14 +15,14 @@ export const HomePage = () => {
   };
 
   useEffect(() => {
-    const unsubscribed = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setIsSignedIn(true);
       } else {
         setIsSignedIn(false);
       }
     });
-    return () => unsubscribed();
+    return () => unsubscribe();
   }, []);
 
   return (
