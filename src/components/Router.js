@@ -1,8 +1,8 @@
 import { Route, Switch, BrowserRouter } from "react-router-dom";
 import { HomePage } from "./HomePage";
 import { LoginPage } from "./LoginPage";
-import { RoomPage } from "./RoomPage";
 import { SignupPage } from "./SignupPage";
+import { RoomPage } from "./RoomPage";
 
 export const Router = () => {
   return (

@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import { auth } from "../firebase";
-import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 export const SignupPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
+
   const history = useHistory();
 
   const handleClickSignup = async (e) => {
     e.preventDefault();
-    await auth.createUserWithEmailAndPassword(email, password);
-    history.push("/login");
+    try {
+      await auth.createUserWithEmailAndPassword(email, password);
+      history.push("/");
+    } catch (error) {
+      alert("エラーが発生しました");
+    }
   };
 
   return (
@@ -35,8 +40,19 @@ export const SignupPage = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button onClick={handleClickSignup}>登録</button>
-        <Link to="/login">既にアカウントを持っている方はこちら</Link>
+        <div>
+          <label>password再入力</label>
+          <input
+            type="password"
+            value={rePassword}
+            placeholder="password"
+            onChange={(e) => setRePassword(e.target.value)}
+          />
+        </div>
+        <button onClick={handleClickSignup} disabled={password !== rePassword}>
+          登録
+        </button>
+        <Link to="/login">既にアカウントがある方はこちら</Link>
       </form>
     </div>
   );

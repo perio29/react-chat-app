@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { auth } from "../firebase";
-import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -10,8 +9,12 @@ export const LoginPage = () => {
 
   const handleClickLogin = async (e) => {
     e.preventDefault();
-    await auth.signInWithEmailAndPassword(email, password);
-    history.push("/");
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      history.push("/");
+    } catch (error) {
+      alert("エラーが発生しました");
+    }
   };
 
   return (
