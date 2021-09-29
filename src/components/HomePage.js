@@ -5,10 +5,10 @@ import { useHistory } from "react-router";
 import { useState } from "react";
 
 export const HomePage = () => {
-  const [isSignedIn, setIsSignedIn] = useState(true);
+  const [isLogin, setIsLogin] = useState(true);
   const history = useHistory();
 
-  const handleClickLogout = (e) => {
+  const onClickLogout = (e) => {
     e.preventDefault();
     auth.signOut();
     history.push("/login");
@@ -17,13 +17,14 @@ export const HomePage = () => {
   useEffect(() => {
     let isMounted = true;
     auth.onAuthStateChanged((user) => {
-      const authUser = user;
+      const userId = user;
+      console.log(userId);
 
       if (isMounted) {
-        if (authUser) {
-          setIsSignedIn(true);
+        if (userId) {
+          setIsLogin(true);
         } else {
-          setIsSignedIn(false);
+          setIsLogin(false);
         }
       }
     });
@@ -33,15 +34,14 @@ export const HomePage = () => {
     };
   }, []);
 
-  return (
-    <>
-      {isSignedIn && (
-        <>
-          <h1>Home</h1>
-          <button onClick={handleClickLogout}>ログアウト</button>
-        </>
-      )}
-      {!isSignedIn && <Redirect to="/signup" />}
-    </>
-  );
+  if (isLogin) {
+    return (
+      <div>
+        <h1>home</h1>
+        <button onClick={onClickLogout}>ログアウト</button>
+      </div>
+    );
+  } else {
+    return <Redirect to="/signup" />;
+  }
 };
