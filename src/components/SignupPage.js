@@ -17,9 +17,9 @@ export const SignupPage = () => {
       await auth.createUserWithEmailAndPassword(email, password).then(
         auth.onAuthStateChanged((user) => {
           if (user !== null) {
-            db.collection("users").doc(auth.currentUser.uid).set({
-              displayName: displayName,
-            });
+            db.collection("users")
+              .doc(auth.currentUser.uid)
+              .set({ displayName });
           }
         })
       );
@@ -62,7 +62,6 @@ export const SignupPage = () => {
         <div>
           <label>表示名</label>
           <input
-            type="name"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
           />
