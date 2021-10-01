@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { auth } from "../firebase";
 import { Link, useHistory } from "react-router-dom";
+import { db } from "../firebase";
 
 export const SignupPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [rePassword, setRePassword] = useState("");
 
   const history = useHistory();
@@ -12,7 +14,15 @@ export const SignupPage = () => {
   const handleClickSignup = async (e) => {
     e.preventDefault();
     try {
-      await auth.createUserWithEmailAndPassword(email, password);
+      await auth.createUserWithEmailAndPassword(email, password).then(
+        auth.onAuthStateChanged((user) => {
+          if (user !== null) {
+            db.collection("users").doc(auth.currentUser.uid).set({
+              displayName: displayName,
+            });
+          }
+        })
+      );
       history.push("/");
     } catch (error) {
       alert("エラーが発生しました");
@@ -47,6 +57,14 @@ export const SignupPage = () => {
             value={rePassword}
             placeholder="password"
             onChange={(e) => setRePassword(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>表示名</label>
+          <input
+            type="name"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
           />
         </div>
         <button onClick={handleClickSignup} disabled={password !== rePassword}>
