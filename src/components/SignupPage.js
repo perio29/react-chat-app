@@ -16,7 +16,7 @@ export const SignupPage = () => {
     try {
       await auth.createUserWithEmailAndPassword(email, password).then(
         auth.onAuthStateChanged((user) => {
-          if (user !== null) {
+          if (!!user) {
             db.collection("users")
               .doc(auth.currentUser.uid)
               .set({ displayName });
