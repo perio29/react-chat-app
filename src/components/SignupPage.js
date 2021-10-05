@@ -14,15 +14,14 @@ export const SignupPage = () => {
   const handleClickSignup = async (e) => {
     e.preventDefault();
     try {
-      await auth.createUserWithEmailAndPassword(email, password).then(
-        auth.onAuthStateChanged((user) => {
-          if (!!user) {
-            db.collection("users")
-              .doc(auth.currentUser.uid)
-              .set({ displayName });
-          }
-        })
-      );
+      await auth.createUserWithEmailAndPassword(email, password);
+      await auth.onAuthStateChanged((user) => {
+        if (!!user) {
+          db.collection("users")
+            .doc(user.uid)
+            .set({ displayName }, { merge: true });
+        }
+      });
       history.push("/");
     } catch (error) {
       alert("エラーが発生しました");
