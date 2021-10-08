@@ -21,7 +21,7 @@ export const HomePage = () => {
       const selectUser = userDocuments.docs.filter((doc) => doc.id !== userId);
       setUsers(selectUser);
     } catch (error) {
-      console.log(error);
+      console.log("エラーが発生しました！");
     }
   };
 
@@ -44,7 +44,7 @@ export const HomePage = () => {
       });
       return user();
     } catch (error) {
-      console.log(error);
+      console.log("エラーが発生しました！");
     }
   };
 
