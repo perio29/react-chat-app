@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { auth } from "../firebase";
 import { db } from "../firebase";
 import { Redirect } from "react-router";
-// import { useHistory } from "react-router";
 import { useState } from "react";
 import styled from "styled-components";
 import { myTimeStamp } from "../firebase";
@@ -10,22 +9,20 @@ import { myTimeStamp } from "../firebase";
 export const HomePage = () => {
   const [isSignedIn, setIsSignedIn] = useState(true);
   const [isModal, setIsModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState([]);
+  const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState("");
-  // const history = useHistory();
-
-  // const handleClickLogout = (e) => {
-  //   e.preventDefault();
-  //   auth.signOut();
-  //   history.push("/login");
-  // };
 
   const handleClickModalOn = async (e) => {
     e.preventDefault();
     setIsModal(true);
-
-    const userDocuments = await db.collection("users").get();
-    setSelectedUser(userDocuments.docs);
+    try {
+      const userDocuments = await db.collection("users").get();
+      const userId = auth.currentUser.uid;
+      const selectUser = userDocuments.docs.filter((doc) => doc.id !== userId);
+      setUsers(selectUser);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleClickModalOff = (e) => {
@@ -35,14 +32,20 @@ export const HomePage = () => {
 
   const handleClickAddRooms = async (e) => {
     e.preventDefault();
-    await auth.onAuthStateChanged((user) => {
-      db.collection("rooms")
-        .doc()
-        .set({
-          participants: [user.uid, selectedUserId],
-          createdAt: myTimeStamp.toDate(),
-        });
-    });
+    try {
+      const user = await auth.onAuthStateChanged((user) => {
+        db.collection("rooms")
+          .doc()
+          .set({
+            participants: [user.uid, selectedUserId],
+            createdAt: myTimeStamp.toDate(),
+          });
+        alert("roomの作成に成功しました！");
+      });
+      return user();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -57,7 +60,7 @@ export const HomePage = () => {
   }, []);
 
   return (
-    <div>
+    <>
       {isSignedIn && (
         <>
           <ModalButton onClick={handleClickModalOn}>
@@ -68,16 +71,16 @@ export const HomePage = () => {
               <OverrayContent>
                 <SelectP>チャットを始める相手を選んでください</SelectP>
                 <UserSelect onChange={(e) => setSelectedUserId(e.target.value)}>
-                  {selectedUser.map((doc) => (
+                  {users.map((doc) => (
                     <option key={doc.id} value={doc.id}>
                       {doc.data().displayName}
                     </option>
                   ))}
                 </UserSelect>
                 <ButtonDiv>
-                  <ClosedButton onClick={handleClickModalOff}>
+                  <CloseButton onClick={handleClickModalOff}>
                     閉じる
-                  </ClosedButton>
+                  </CloseButton>
                   <ChatStartButton onClick={handleClickAddRooms}>
                     チャットを始める
                   </ChatStartButton>
@@ -85,11 +88,10 @@ export const HomePage = () => {
               </OverrayContent>
             </OverrayDiv>
           )}
-          {/* <button onClick={handleClickLogout}>ログアウト</button> */}
         </>
       )}
       {!isSignedIn && <Redirect to="/signup" />}
-    </div>
+    </>
   );
 };
 
@@ -152,7 +154,7 @@ const ButtonDiv = styled.div`
   justify-content: flex-end;
 `;
 
-const ClosedButton = styled.button`
+const CloseButton = styled.button`
   background-color: #fff;
   margin-right: 6px;
   padding: 2px;
