@@ -18,10 +18,12 @@ export const HomePage = () => {
     try {
       const userDocuments = await db.collection("users").get();
       const userId = auth.currentUser.uid;
-      const selectUser = userDocuments.docs.filter((doc) => doc.id !== userId);
-      setUsers(selectUser);
+      const selectableUsers = userDocuments.docs.filter(
+        (doc) => doc.id !== userId
+      );
+      setUsers(selectableUsers);
     } catch (error) {
-      console.log("エラーが発生しました！");
+      alert("エラーが発生しました！");
     }
   };
 
@@ -30,21 +32,19 @@ export const HomePage = () => {
     setIsModal(false);
   };
 
-  const handleClickAddRooms = async (e) => {
+  const handleClickAddRooms = (e) => {
     e.preventDefault();
     try {
-      const user = await auth.onAuthStateChanged((user) => {
-        db.collection("rooms")
-          .doc()
-          .set({
-            participants: [user.uid, selectedUserId],
-            createdAt: myTimeStamp.toDate(),
-          });
-        alert("roomの作成に成功しました！");
-      });
-      return user();
+      const userId = auth.currentUser.uid;
+      db.collection("rooms")
+        .doc()
+        .set({
+          participants: [userId, selectedUserId],
+          createdAt: myTimeStamp.toDate(),
+        });
+      alert("roomの作成に成功しました！");
     } catch (error) {
-      console.log("エラーが発生しました！");
+      alert("エラーが発生しました！");
     }
   };
 
