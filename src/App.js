@@ -1,7 +1,13 @@
 import { Router } from "./components/Router";
+import { Reset } from "styled-reset";
 
 function App() {
-  return <Router />;
+  return (
+    <>
+      <Reset />
+      <Router />
+    </>
+  );
 }
 
 export default App;
