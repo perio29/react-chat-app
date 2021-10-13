@@ -86,7 +86,7 @@ export const HomePage = () => {
           <ModalButton onClick={toggleModalOn}>チャットを始める</ModalButton>
           {isModalOn && (
             <RoomModal
-              users={users}
+              users={users.filter((doc) => doc.id !== currentUserId)}
               setSelectedUserId={setSelectedUserId}
               handleClickAddRooms={handleClickAddRooms}
               handleClickModalOff={toggleModalOn}
