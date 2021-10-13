@@ -11,9 +11,9 @@ function RoomModal({
         <OverrayContent>
           <SelectP>チャットを始める相手を選んでください</SelectP>
           <UserSelect onChange={(e) => setSelectedUserId(e.target.value)}>
-            {users.map((doc) => (
-              <option key={doc.id} value={doc.id}>
-                {doc.data().displayName}
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.displayName}
               </option>
             ))}
           </UserSelect>

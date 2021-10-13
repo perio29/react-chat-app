@@ -6,89 +6,104 @@ import RoomCard from "./RoomCard";
 import RoomModal from "./RoomModal";
 
 export const HomePage = () => {
+  const [currentUserId, setCurrentUserId] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(true);
-  const [isModal, setIsModal] = useState(false);
+  const [isModalOn, setIsModalOn] = useState(false);
   const [users, setUsers] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState("");
 
-  const handleClickModalOn = async (e) => {
+  const toggleModalOn = (e) => {
     e.preventDefault();
-    setIsModal(true);
-    try {
-      const userDocuments = await db.collection("users").get();
-      const userId = auth.currentUser.uid;
-      const selectableUsers = userDocuments.docs.filter(
-        (doc) => doc.id !== userId
-      );
-      setUsers(selectableUsers);
-    } catch (error) {
-      alert("エラーが発生しました！");
-    }
+    setIsModalOn(!isModalOn);
   };
 
-  const handleClickModalOff = (e) => {
-    e.preventDefault();
-    setIsModal(false);
-  };
-
-  const handleClickAddRooms = (e) => {
+  const handleClickAddRooms = async (e) => {
     e.preventDefault();
     try {
       const userId = auth.currentUser.uid;
-      db.collection("rooms")
+      await db
+        .collection("rooms")
         .doc()
         .set({
           participants: [userId, selectedUserId],
           createdAt: myTimeStamp.toDate(),
         });
-      alert("roomの作成に成功しました！");
+      setIsModalOn(false);
     } catch (error) {
+      console.error(error);
       alert("エラーが発生しました！");
     }
   };
 
+  // ログイン中のユーザーの取得
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
+        setCurrentUserId(user.uid);
         setIsSignedIn(true);
       } else {
+        setCurrentUserId("");
         setIsSignedIn(false);
       }
     });
-    return () => unsubscribe();
+    return unsubscribe;
   }, []);
 
-  // rooms, usersの取得
+  // usersの取得
   useEffect(() => {
-    const unsubscribeRooms = db.collection("rooms").onSnapshot((snapshot) => {
-      const roomDocs = [];
+    const unsubscribe = db.collection("users").onSnapshot((snapshot) => {
+      const docs = [];
       snapshot.forEach((doc) => {
-        roomDocs.push({ ...doc.data(), id: doc.id });
+        docs.push({ ...doc.data(), id: doc.id });
       });
-      console.log(roomDocs);
-      setRooms(roomDocs);
+      setUsers(docs);
     });
-    return unsubscribeRooms;
+    return unsubscribe;
   }, []);
+
+  // roomsの取得：currentUserIdが取得済みの場合に実行
+  useEffect(() => {
+    if (currentUserId) {
+      const unsubscribe = db
+        .collection("rooms")
+        .where("participants", "array-contains", currentUserId)
+        .onSnapshot((snapshot) => {
+          const docs = [];
+          snapshot.forEach((doc) => {
+            docs.push({ ...doc.data(), id: doc.id });
+          });
+          setRooms(docs);
+        });
+      return unsubscribe;
+    }
+  }, [currentUserId]);
 
   return (
     <>
-      {isSignedIn && (
+      {currentUserId && (
         <>
-          <ModalButton onClick={handleClickModalOn}>
-            チャットを始める
-          </ModalButton>
-          {isModal && (
+          <ModalButton onClick={toggleModalOn}>チャットを始める</ModalButton>
+          {isModalOn && (
             <RoomModal
               users={users}
               setSelectedUserId={setSelectedUserId}
               handleClickAddRooms={handleClickAddRooms}
-              handleClickModalOff={handleClickModalOff}
+              handleClickModalOff={toggleModalOn}
             />
           )}
           {rooms.map((room) => (
-            <RoomCard room={room} />
+            <RoomCard
+              room={room}
+              user={users.find((user) => {
+                console.log(user, room);
+                console.log(room.participants);
+                return (
+                  room.participants.includes(user.id) &&
+                  user.id !== currentUserId
+                );
+              })}
+            />
           ))}
         </>
       )}
