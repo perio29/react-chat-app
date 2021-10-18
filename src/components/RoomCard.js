@@ -9,11 +9,11 @@ export const RoomCard = ({ room, user }) => {
 
   const handleClickRoom = (e) => {
     e.preventDefault();
-    history.push("/rooms/:roomId");
+    history.push(`/rooms/${room.id}`);
   };
   return (
     <>
-      <CardDiv>
+      <CardDiv onClick={handleClickRoom}>
         <DisplayName>{user && user.displayName}</DisplayName>
         <SubDiv>
           <DateP>{`${dayjs(room.createdAt.toDate().toString()).format(
@@ -23,7 +23,7 @@ export const RoomCard = ({ room, user }) => {
             <IconContext.Provider value={{ size: "20px" }}>
               <BiLogIn />
             </IconContext.Provider>
-            <RoomButton onClick={handleClickRoom}>入室</RoomButton>
+            <RoomButton>入室</RoomButton>
           </ButtonDiv>
         </SubDiv>
       </CardDiv>
@@ -37,6 +37,7 @@ const CardDiv = styled.div`
   padding: 20px;
   border: 1px solid rgba(0, 0, 0, 0.3);
   box-shadow: 2px 2px 7px 0px rgb(145 126 126 / 34%);
+  cursor: pointer;
 `;
 
 const DisplayName = styled.h2`
@@ -66,4 +67,4 @@ const RoomButton = styled.button`
 const ButtonDiv = styled.div`
   display: flex;
   align-items: center;
-`
+`;

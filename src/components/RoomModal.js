@@ -5,14 +5,32 @@ export const RoomModal = ({
   setSelectedUserId,
   handleClickAddRooms,
   handleClickModalOff,
+  rooms,
 }) => {
+  let roomParticipantedUser = [];
+
+  rooms.forEach(
+    (room) =>
+      (roomParticipantedUser = [...roomParticipantedUser, ...room.participants])
+  );
+
+  const selectableUsers = users.filter(
+    (user) => !roomParticipantedUser.includes(user.id)
+  );
+
+  const handleClickChange = (e) => {
+    e.preventDefault();
+    setSelectedUserId(e.target.value);
+  };
+
   return (
     <>
       <OverrayDiv>
         <OverrayContent>
           <SelectP>チャットを始める相手を選んでください</SelectP>
-          <UserSelect onChange={(e) => setSelectedUserId(e.target.value)}>
-            {users.map((user) => (
+          <UserSelect onChange={handleClickChange}>
+            <option hidden>ユーザーを選択してください</option>
+            {selectableUsers.map((user) => (
               <option key={user.id} value={user.id}>
                 {user.displayName}
               </option>

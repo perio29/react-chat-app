@@ -27,7 +27,7 @@ export const HomePage = () => {
         .doc()
         .set({
           participants: [userId, selectedUserId],
-          createdAt: myTimeStamp.toDate(),
+          createdAt: myTimeStamp,
         });
       setIsModalOn(false);
     } catch (error) {
@@ -70,7 +70,10 @@ export const HomePage = () => {
         .onSnapshot((snapshot) => {
           const docs = [];
           snapshot.forEach((doc) => {
-            docs.push({ ...doc.data(), id: doc.id });
+            docs.push({
+              ...doc.data({ serverTimestamps: "estimate" }),
+              id: doc.id,
+            });
           });
           setRooms(docs);
         });
@@ -90,6 +93,7 @@ export const HomePage = () => {
           {isModalOn && (
             <RoomModal
               users={users.filter((doc) => doc.id !== currentUserId)}
+              rooms={rooms}
               setSelectedUserId={setSelectedUserId}
               handleClickAddRooms={handleClickAddRooms}
               handleClickModalOff={toggleModalOn}
