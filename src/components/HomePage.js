@@ -30,6 +30,7 @@ export const HomePage = () => {
           createdAt: myTimeStamp,
         });
       setIsModalOn(false);
+      setSelectedUserId("");
     } catch (error) {
       alert("エラーが発生しました！");
     }
@@ -94,6 +95,7 @@ export const HomePage = () => {
             <RoomModal
               users={users.filter((doc) => doc.id !== currentUserId)}
               rooms={rooms}
+              selectedUserId={selectedUserId}
               setSelectedUserId={setSelectedUserId}
               handleClickAddRooms={handleClickAddRooms}
               handleClickModalOff={toggleModalOn}

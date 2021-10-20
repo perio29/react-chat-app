@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const RoomModal = ({
   users,
+  selectedUserId,
   setSelectedUserId,
   handleClickAddRooms,
   handleClickModalOff,
@@ -38,7 +39,10 @@ export const RoomModal = ({
           </UserSelect>
           <ButtonDiv>
             <CloseButton onClick={handleClickModalOff}>閉じる</CloseButton>
-            <ChatStartButton onClick={handleClickAddRooms}>
+            <ChatStartButton
+              onClick={handleClickAddRooms}
+              disabled={!selectedUserId}
+            >
               チャットを始める
             </ChatStartButton>
           </ButtonDiv>
