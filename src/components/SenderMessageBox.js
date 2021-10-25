@@ -3,24 +3,25 @@ import dayjs from "dayjs";
 
 export const SenderMessageBox = ({ message }) => {
   return (
-    <div>
-      <MessageDiv>
-        <MessageP>{message.text}</MessageP>
-        <SendDateP>{`${dayjs(message.createdAt.toDate().toString()).format(
+    
+      <Wrapper>
+        <MainText>{message.text}</MainText>
+        <SendDateLabel>{`${dayjs(message.createdAt.toDate().toString()).format(
           "YYYY年MM月DD日 HH:mm"
-        )}に送信済み`}</SendDateP>
-      </MessageDiv>
-    </div>
+        )}に送信済み`}</SendDateLabel>
+      </Wrapper>
+    
   );
 };
 
-const MessageDiv = styled.div`
+const Wrapper = styled.div`
   margin-right: 10px;
   margin-bottom: 10px;
   margin-top: 10px;
+  flex-shrink: 0;
 `;
 
-const MessageP = styled.p`
+const MainText  = styled.p`
   color: #fff;
   font-size: 22px;
   background-color: #0f8fd0;
@@ -29,7 +30,7 @@ const MessageP = styled.p`
   margin-bottom: 10px;
   border-radius: 10px;
 `;
-const SendDateP = styled.p`
+const SendDateLabel = styled.p`
   color: gray;
   font-size: 10px;
   text-align: right;

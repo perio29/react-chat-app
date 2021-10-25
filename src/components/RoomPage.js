@@ -13,13 +13,11 @@ export const RoomPage = () => {
   const params = useParams();
 
   const handleAddText = (e) => {
-    e.preventDefault();
     setText(e.target.value);
   };
 
-  const addLoginUserMessage = (e) => {
-    e.preventDefault();
-    db.collection("rooms").doc(params.roomId).collection("messages").doc().set({
+  const sendMessage = () => {
+    db.collection(`rooms/${params.roomId}/messages`).add({
       createdAt: myTimeStamp,
       createdBy: currentUserId,
       text: text,
@@ -30,9 +28,7 @@ export const RoomPage = () => {
   /* messageの取得 */
   useEffect(() => {
     const message = db
-      .collection("rooms")
-      .doc(params.roomId)
-      .collection("messages")
+      .collection(`rooms/${params.roomId}/messages`)
       .orderBy("createdAt")
       .onSnapshot((snapshot) => {
         const docs = [];
@@ -59,68 +55,67 @@ export const RoomPage = () => {
     return unsubscribe;
   }, []);
 
-  
   return (
-    <Container>
-      <MessageAreaDiv>
+    <>
+      <MessageWrapper>
         {messages.map((message) =>
           message.createdBy === currentUserId ? (
             <SenderMessageContainer key={message.id}>
               <SenderMessageBox message={message} />
             </SenderMessageContainer>
           ) : (
-            <ReceiverMessageContainer key={messages.id}>
+            <ReceiverMessageContainer key={message.id}>
               <ReceiverMessageBox message={message} />
             </ReceiverMessageContainer>
           )
         )}
-      </MessageAreaDiv>
+      </MessageWrapper>
 
-      <FormDiv>
-        <MessaggInput
+      <FormWrapper>
+        <MessageInputArea
           placeholder="メッセージを入力"
           value={text}
           onChange={handleAddText}
         />
-        <MessageButton onClick={addLoginUserMessage}>送信</MessageButton>
-      </FormDiv>
-    </Container>
+        <MessageButton onClick={sendMessage}>送信</MessageButton>
+      </FormWrapper>
+    </>
   );
 };
 
-const Container = styled.div`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-const MessageAreaDiv = styled.div`
-  margin-top: 20px;
+const MessageWrapper = styled.div`
+  margin-top: 10px;
+  height: calc(100vh - 50px);
+  overflow-y: scroll;
 `;
 
 const SenderMessageContainer = styled.div`
-  margin-right: 40px;
+  margin-left: auto;
+  width: 50%;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 `;
 
 const ReceiverMessageContainer = styled.div`
-  margin-left: 40px;
+  width: 50%;
+  margin-right: auto;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 `;
 
-const FormDiv = styled.div`
+const FormWrapper = styled.div`
   width: 100%;
-  margin: 0 auto 40px;
+  height: 50px;
+  margin: 0 auto;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
-const MessaggInput = styled.input`
+const MessageInputArea = styled.input`
   padding: 10px;
   border-radius: 10px;
   background-color: #eee;
