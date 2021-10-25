@@ -15,7 +15,7 @@ export const ReceiverMessageBox = ({message}) => {
 };
 
 const Wrapper = styled.div`
-margin-right: 10px;
+margin-left: 10px;
 margin-bottom: 10px;
 margin-top: 10px;
 flex-shrink: 0;

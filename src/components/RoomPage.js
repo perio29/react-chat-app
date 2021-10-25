@@ -84,7 +84,6 @@ export const RoomPage = () => {
 };
 
 const MessageWrapper = styled.div`
-  margin-top: 10px;
   height: calc(100vh - 50px);
   overflow-y: scroll;
 `;
