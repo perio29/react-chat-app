@@ -70,6 +70,10 @@ const OverrayContent = styled.div`
   padding: 20px;
   background-color: #fff;
   box-shadow: 4px 3px 7px 1px rgba(0, 0, 0, 0.3);
+
+  @media screen and (max-width: 768px) {
+    width: 80%;
+  }
 `;
 
 const SelectP = styled.p`
