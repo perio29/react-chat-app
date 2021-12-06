@@ -43,7 +43,12 @@ export const LoginPage = () => {
           />
         </InputBox>
         <ButtonDiv>
-          <Button onClick={handleClickLogin}>Login</Button>
+          <Button
+            onClick={handleClickLogin}
+            disabled={email === "" || password === ""}
+          >
+            Login
+          </Button>
           <SLink>
             <Link to="/signup">登録がまだの方はこちら</Link>
           </SLink>
