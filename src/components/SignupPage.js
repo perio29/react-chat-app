@@ -93,8 +93,6 @@ export const SignupPage = () => {
 };
 
 const Container = styled.div`
-  @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;1,300;1,600&display=swap");
-  font-family: "Source Sans Pro", sans-serif;
   max-width: 100%;
   min-height: 100vh;
   width: 100%;

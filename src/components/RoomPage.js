@@ -77,7 +77,9 @@ export const RoomPage = () => {
           value={text}
           onChange={handleAddText}
         />
-        <MessageButton onClick={sendMessage}>送信</MessageButton>
+        <MessageButton onClick={sendMessage} disabled={text === ""}>
+          送信
+        </MessageButton>
       </FormWrapper>
     </>
   );
